@@ -1,0 +1,70 @@
+root_dir = "."
+
+[os.unix]
+dev = ["DEBUG=1 TEST=0 GOOGLE_APPLICATION_CREDENTIALS='./creds/pesira-core.json' ./mvnw function:run"]
+prod = ["DEBUG=0 TEST=0 GOOGLE_APPLICATION_CREDENTIALS='./creds/pesira-core.json' ./mvnw function:run"]
+reqWithLogos=[
+    """
+    curl --header "Content-Type: multipart/form-data" \
+   --request POST \
+   -F "user_id=user123" \
+   -F "user_email=techies@pesira.io" \
+   -F "project_id=1" \
+   -F "project_name=B4WE" \
+   -F "location=SK" \
+   -F "supplier_code=001" \
+   -F "quantity=35" \
+   -F "size=500" \
+   -F "logo1=@test_logos/b4we.png" \
+   -F "logo2=@test_logos/canada.png" \
+   -F "logo3=@test_logos/ciat.png" \
+   -F "logo4=@test_logos/image.png" \
+   http://localhost:8080
+   """
+]
+cloudTest=[
+"""
+curl --header "Content-Type: multipart/form-data" \
+   --request POST \
+   -F "userId=user123" \
+   -F "userEmail=awotideajibola@gmail.com" \
+   -F "projectId=prod456" \
+   -F "projectName=B4WE" \
+   -F "quantity=500" \
+   -F "size=500" \
+   -F "logo1=@test_logos/b4we.png" \
+   -F "logo2=@test_logos/canada.png" \
+   -F "logo3=@test_logos/ciat.png" \
+   -F "logo4=@test_logos/image.png" \
+   https://us-central1-pesira-core.cloudfunctions.net/qrcodefunction
+"""
+]
+reqNoLogos=[
+"""
+curl --header "Content-Type: multipart/form-data" \
+   --request POST \
+   -F "user_id=user123" \
+   -F "user_email=awotideajibola@gmail.com" \
+   -F "project_id=prod456" \
+   -F "project_name=B4WE" \
+   -F "location=SK" \
+   -F "supplier_code=001" \
+   -F "quantity=35" \
+   -F "size=500" \
+   http://localhost:8080
+"""
+]
+oauth=[
+"""
+GOOGLE_APPLICATION_CREDENTIALS="./creds/pesira-core-0357c0e96e1a.json" \
+	./mvnw compile exec:java -Dexec.mainClass="com.pesira.traceability.helpers.GmailOauth"
+"""
+]
+
+[os.windows]
+dev = []
+
+[exclude]
+dir = [".git"]
+file = []
+ext = ["toml"]

@@ -1,0 +1,5 @@
+/creds/
+/target/
+/test_logos/
+/tmp/
+.DS_Store
