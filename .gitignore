@@ -3,3 +3,7 @@
 /test_logos/
 /tmp/
 .DS_Store
+TODO.md
+*.log
+.factorypath
+.project

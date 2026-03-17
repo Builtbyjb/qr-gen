@@ -1,4 +1,4 @@
-package com.pesira.traceability.helpers;
+package com.builtbyjb.qrgen.helpers;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -10,7 +10,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.gmail.GmailScopes;
-import com.pesira.traceability.repository.UtilRepository;
+import com.builtbyjb.qrgen.repository.UtilRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;

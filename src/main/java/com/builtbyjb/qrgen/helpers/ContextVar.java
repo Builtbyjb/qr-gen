@@ -1,4 +1,4 @@
-package com.pesira.traceability.helpers;
+package com.builtbyjb.qrgen.helpers;
 
 import java.util.HashMap;
 import java.util.Map;

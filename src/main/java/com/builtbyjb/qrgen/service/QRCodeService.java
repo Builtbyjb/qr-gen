@@ -1,10 +1,10 @@
-package com.pesira.traceability.service;
+package com.builtbyjb.qrgen.service;
 
-import com.pesira.traceability.config.CloudStoreConfig;
-import com.pesira.traceability.config.GmailConfig;
-import com.pesira.traceability.helpers.Context;
-import com.pesira.traceability.model.PartnerModel;
-import com.pesira.traceability.repository.UtilRepository;
+import com.builtbyjb.qrgen.config.CloudStoreConfig;
+import com.builtbyjb.qrgen.config.GmailConfig;
+import com.builtbyjb.qrgen.helpers.Context;
+import com.builtbyjb.qrgen.model.PartnerModel;
+import com.builtbyjb.qrgen.repository.UtilRepository;
 import jakarta.mail.MessagingException;
 import java.io.File;
 import java.io.FileInputStream;

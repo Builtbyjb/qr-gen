@@ -1,4 +1,4 @@
-package com.pesira.traceability.model;
+package com.builtbyjb.qrgen.model;
 
 public class QRCodeModel {
 

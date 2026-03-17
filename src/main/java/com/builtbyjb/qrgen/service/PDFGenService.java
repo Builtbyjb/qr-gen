@@ -1,4 +1,4 @@
-package com.pesira.traceability.service;
+package com.builtbyjb.qrgen.service;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -16,9 +16,9 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.pesira.traceability.helpers.Context;
-import com.pesira.traceability.model.QRCodeModel;
-import com.pesira.traceability.repository.QRCodeRepository;
+import com.builtbyjb.qrgen.helpers.Context;
+import com.builtbyjb.qrgen.model.QRCodeModel;
+import com.builtbyjb.qrgen.repository.QRCodeRepository;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;

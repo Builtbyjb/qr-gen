@@ -1,4 +1,4 @@
-package com.pesira.traceability.service;
+package com.builtbyjb.qrgen.service;
 
 // import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

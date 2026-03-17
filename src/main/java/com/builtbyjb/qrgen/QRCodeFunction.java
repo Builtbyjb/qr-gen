@@ -1,12 +1,12 @@
-package com.pesira.traceability;
+package com.builtbyjb.qrgen;
 
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import com.pesira.traceability.config.PostgresConfig;
-import com.pesira.traceability.helpers.Context;
-import com.pesira.traceability.helpers.ParseTime;
-import com.pesira.traceability.service.QRCodeService;
+import com.builtbyjb.qrgen.config.PostgresConfig;
+import com.builtbyjb.qrgen.helpers.Context;
+import com.builtbyjb.qrgen.helpers.ParseTime;
+import com.builtbyjb.qrgen.service.QRCodeService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

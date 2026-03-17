@@ -1,4 +1,4 @@
-package com.pesira.traceability.repository;
+package com.builtbyjb.qrgen.repository;
 
 import com.google.cloud.datastore.*;
 import io.github.cdimascio.dotenv.Dotenv;

@@ -1,4 +1,4 @@
-package com.pesira.traceability.config;
+package com.builtbyjb.qrgen.config;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.GenericUrl;
@@ -13,7 +13,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.GenericData;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
-import com.pesira.traceability.repository.UtilRepository;
+import com.builtbyjb.qrgen.repository.UtilRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;

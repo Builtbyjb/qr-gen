@@ -1,4 +1,4 @@
-package com.pesira.traceability.service;
+package com.builtbyjb.qrgen.service;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.charset.StandardCharsets;

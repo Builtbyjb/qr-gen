@@ -1,4 +1,4 @@
-package com.pesira.traceability.config;
+package com.builtbyjb.qrgen.config;
 
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.BlobId;

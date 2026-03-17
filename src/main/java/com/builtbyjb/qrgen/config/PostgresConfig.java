@@ -1,6 +1,6 @@
-package com.pesira.traceability.config;
+package com.builtbyjb.qrgen.config;
 
-import com.pesira.traceability.helpers.Context;
+import com.builtbyjb.qrgen.helpers.Context;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;

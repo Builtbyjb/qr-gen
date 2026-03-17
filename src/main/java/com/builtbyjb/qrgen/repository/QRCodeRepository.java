@@ -1,7 +1,7 @@
-package com.pesira.traceability.repository;
+package com.builtbyjb.qrgen.repository;
 
-import com.pesira.traceability.config.PostgresConfig;
-import com.pesira.traceability.model.QRCodeModel;
+import com.builtbyjb.qrgen.config.PostgresConfig;
+import com.builtbyjb.qrgen.model.QRCodeModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
