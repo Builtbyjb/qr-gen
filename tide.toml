@@ -1,7 +1,7 @@
 root_dir = "."
 
 [os.unix]
-dev = ["DEBUG=1 TEST=0 ./mvnw function:run"]
+dev = ["DEBUG=1 TEST=0 ./mvnw clean package && java -jar target/qrgen-0.0.1-SNAPSHOT.jar --quantity=1000"]
 
 [os.windows]
 dev = []

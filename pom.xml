@@ -5,12 +5,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
+	<!-- <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.5</version>
 		<relativePath />
-	</parent>
+	</parent> -->
 	<groupId>com.builtbyjb</groupId>
 	<artifactId>qrgen</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -37,6 +37,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.44</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -73,20 +74,6 @@
 		    <version>6.1.0</version>
 		    <scope>provided</scope>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.google.cloud.functions/functions-framework-api -->
-		<dependency>
-            <groupId>com.google.cloud.functions</groupId>
-            <artifactId>functions-framework-api</artifactId>
-            <version>1.1.4</version>
-		</dependency>
-
-        <dependency>
-            <groupId>com.google.cloud.functions.invoker</groupId>
-            <artifactId>java-function-invoker</artifactId>
-            <version>1.4.1</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
              <groupId>com.google.cloud</groupId>
@@ -154,6 +141,19 @@
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                <archive>
+                    <manifest>
+                        <mainClass>
+                            com.builtbyjb.qrgen.QRCodeFunction
+                        </mainClass>
+                    </manifest>
+                </archive>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -165,6 +165,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.44</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -182,15 +183,6 @@
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
-
-			<plugin>
-			    <groupId>com.google.cloud.functions</groupId>
-			    <artifactId>function-maven-plugin</artifactId>
-			    <version>0.11.1</version>
-				<configuration>
-					<functionTarget>com.builtbyjb.qrgen.QRCodeFunction</functionTarget>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
  <distributionManagement>
