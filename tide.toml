@@ -1,7 +1,18 @@
 root_dir = "."
 
 [os.unix]
-dev = ["DEBUG=1 TEST=0 ./mvnw clean package && java -jar target/qrgen-0.0.1-SNAPSHOT.jar --quantity=1000"]
+dev = [
+    """
+    DEBUG=1 TEST=0 \
+    ./mvnw clean package && \
+    ./mvnw function:run \
+    --quantity=1000 \
+    --info="Additional information for QR code" \
+    --size=500x500 \
+    --url="https://example.com" \
+    --format="pdf"
+    """
+]
 
 [os.windows]
 dev = []
