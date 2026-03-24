@@ -48,8 +48,7 @@ public class Parser {
 
         int quantity = 0; // Required
         String info = "";
-        int width = 500;
-        int height = 500;
+        int size = 50;
         String url = ""; // Required
         Format format = Format.PDF; // Required;
         Storage storage = Storage.fromString("local");
@@ -67,9 +66,7 @@ public class Parser {
                     quantity = Integer.parseInt(str[1]);
                     break;
                 case "--size":
-                    String[] szs = str[1].split("x");
-                    width = Integer.parseInt(szs[0]);
-                    height = Integer.parseInt(szs[1]);
+                    size = Integer.parseInt(str[1]);
                     break;
                 case "--info":
                     info = str[1];
@@ -107,8 +104,7 @@ public class Parser {
         Argument argument = Argument.builder()
                 .quantity(quantity)
                 .info(info)
-                .width(width)
-                .height(height)
+                .size(size)
                 .url(url)
                 .format(format)
                 .storage(storage)

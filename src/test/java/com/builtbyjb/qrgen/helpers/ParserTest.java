@@ -24,13 +24,12 @@ public class ParserTest {
     @Test
     @DisplayName("Test parse arguments")
     public void testParseArguments() {
-        String[] args = { "--quantity=10", "--info=Test QR Code", "--size=500x500",
+        String[] args = { "--quantity=10", "--info=Test QR Code", "--size=500",
                 "--url=https://example.com", "--format=png", "--storage=local" };
         Argument expected = Argument.builder()
                 .quantity(10)
                 .info("Test QR Code")
-                .width(500)
-                .height(500)
+                .size(500)
                 .url("https://example.com")
                 .format(Format.PDF)
                 .storage(Storage.LOCAL)

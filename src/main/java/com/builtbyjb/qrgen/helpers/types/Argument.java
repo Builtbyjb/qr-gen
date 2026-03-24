@@ -3,17 +3,18 @@ package com.builtbyjb.qrgen.helpers.types;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
+@Getter
 public class Argument {
     Integer quantity;
     String info;
-    Integer width;
-    Integer height;
+    Integer size;
     String url;
     Format format;
     Storage storage;
@@ -21,8 +22,8 @@ public class Argument {
     @Override
     public String toString() {
         String str = String.format(
-                "Argument{quantity=%d, info='%s', width=%d, height=%d, url='%s', format='%s', storage=%s}",
-                quantity, info, width, height, url, format, storage);
+                "Argument{quantity=%d, info='%s', size=%d, url='%s', format='%s', storage=%s}",
+                quantity, info, size, url, format, storage);
         return str;
     }
 }

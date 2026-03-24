@@ -3,6 +3,8 @@ package com.builtbyjb.qrgen.service;
 import com.builtbyjb.qrgen.config.CloudStoreConfig;
 import com.builtbyjb.qrgen.config.GmailConfig;
 import com.builtbyjb.qrgen.helpers.Context;
+import com.builtbyjb.qrgen.helpers.types.Argument;
+import com.builtbyjb.qrgen.helpers.types.Format;
 import com.builtbyjb.qrgen.model.PartnerModel;
 import com.builtbyjb.qrgen.repository.UtilRepository;
 import jakarta.mail.MessagingException;
@@ -35,50 +37,27 @@ public class QRCodeService {
     private static final CodeGenService codeGenService = new CodeGenService();
     private static final String TMP_ZIP_DIR = "./tmp/zips/";
     private static final String TMP_PDF_DIR = "./tmp/pdfs/";
-    private Long PROJECT_ID;
 
-    public boolean generateQRCodes(
-            String userId,
-            String userEmail,
-            Long projectId,
-            String projectName,
-            float size,
-            long quantity,
-            String location,
-            List<String> logos) throws IOException, GeneralSecurityException, MessagingException {
-        this.PROJECT_ID = projectId;
+    public boolean generateQRCodes(Argument args) throws IOException, GeneralSecurityException, MessagingException {
 
-        long cursor;
-        if (Context.DEBUG.equalsValue(0) && Context.TEST.equalsValue(0)) {
-            cursor = dataStore.getCursorEntity();
-        } else {
-            cursor = 0;
-        }
-
-        List<PartnerModel> partners = new ArrayList<>();
-        partners.add(new PartnerModel("SYDIP", 36));
-
-        int totalQRCodeCount = 0;
-        for (PartnerModel partner : partners) {
-            totalQRCodeCount += partner.getHouseholds();
-        }
-        System.out.println("Total QR code count: " + totalQRCodeCount);
-
-        long end = cursor + totalQRCodeCount;
+        long cursor = 0L;
+        long end = args.getQuantity();
 
         // Store generated codes
-        List<String> generatedCodes = new ArrayList<>();
+        List<String> qrCodes = new ArrayList<>();
         // Generate QR codes
         for (long i = cursor; i < end; i++) {
             String qrCode = codeGenService.generateQRCode(i);
-            generatedCodes.add(qrCode);
+            qrCodes.add(qrCode);
         }
 
-        if (generatedCodes.size() != totalQRCodeCount) {
-            throw new IllegalStateException("Generated QR codes count does not match expected count");
+        long totalQRCodeCount = qrCodes.size();
+
+        if (totalQRCodeCount != end) {
+            throw new IllegalStateException("Generated QR codes quantity does not match expected quantity");
         }
 
-        if (!validateQRCodes(generatedCodes)) {
+        if (!validateQRCodes(qrCodes)) {
             throw new IllegalStateException("Duplicate QR codes generated");
         }
 
@@ -86,85 +65,42 @@ public class QRCodeService {
         int count = 0;
         int chunkSize = 500;
 
-        for (PartnerModel partner : partners) {
-            int partnerQRCodesCount = partner.getHouseholds();
-            showProgress(count, totalQRCodeCount);
-            List<String> trimmedCodes = trimList(generatedCodes, partnerQRCodesCount);
-            if (trimmedCodes.size() != partnerQRCodesCount) {
-                throw new IllegalStateException("Trimmed QR codes count does not match expected count");
+        if (args.getFormat() == Format.PDF) {
+            generatePDFs(qrCodes, chunkSize, args);
+            shutdownExecutor();
+
+            // Zip PDFs
+            List<String> folderNames = getFolderPaths(TMP_PDF_DIR);
+            String zipFileName = zipPDFs(folderNames);
+            if (Context.DEBUG.greaterThanOrEqual(1)) {
+                System.out.println("Generated zip file: " + zipFileName);
             }
-            generatePDFs(chunkSize, trimmedCodes, projectName, logos, size, partner.getName(), location);
-            count += partnerQRCodesCount;
-            showProgress(count, totalQRCodeCount);
+
+            // Upload to cloud storage
+            String fileLink;
+            if (Context.DEBUG.equalsValue(0)) {
+                fileLink = cloudStoreConfig.uploadFile(zipFileName, TMP_ZIP_DIR);
+            } else {
+                fileLink = "https://demo_file_link.zip";
+            }
+
+            // Clean up
+            cleanUp(zipFileName, folderNames);
         }
-
-        shutdownExecutor();
-
-        // Update Datastore cursor
-        if (Context.DEBUG.equalsValue(0)) {
-            dataStore.updateCursorEntity(end);
-        }
-
-        // Zip PDFs
-        List<String> folderNames = getFolderPaths(TMP_PDF_DIR);
-        String zipFileName = zipPDFs(folderNames, projectName);
-        if (Context.DEBUG.greaterThanOrEqual(1)) {
-            System.out.println("Generated zip file: " + zipFileName);
-        }
-
-        // Upload to cloud storage
-        String fileLink;
-        if (Context.DEBUG.equalsValue(0)) {
-            fileLink = cloudStoreConfig.uploadFile(zipFileName, TMP_ZIP_DIR);
-        } else {
-            fileLink = "https://demo_file_link.zip";
-        }
-
-        // Email link to user
-        GmailConfig gmailConfig = new GmailConfig();
-        String subject = "QR Codes for " + projectName;
-        String mail = String.format(
-                """
-                        Hello, your QR codes for %s are ready.
-                        <br/>
-                        <br/>
-                        Click <a href=\"%s\">here</a> to download them.
-                        <br/>
-                        <br/>
-                        Thank you for using Pesira.
-                        <br/>
-                        <br/>
-                        """,
-                projectName,
-                fileLink);
-
-        if (Context.DEBUG.equalsValue(0)) {
-            gmailConfig.sendEmail(userEmail, subject, mail);
-        }
-
-        // Clean up
-        cleanUp(logos, zipFileName, folderNames);
 
         return true;
     }
 
-    private void generatePDFs(
-            int chunkSize,
-            List<String> generatedCodes,
-            String projectName,
-            List<String> logos,
-            float size,
-            String partner,
-            String location) {
+    private void generatePDFs(List<String> qrCodes, int chunkSize, Argument args) {
         List<CompletableFuture<Void>> futures;
         // Create directory if not exists
         createDirectory(TMP_PDF_DIR);
 
         // Create folder if not exits
-        String folderName = TMP_PDF_DIR + partner + "_" + String.valueOf(System.currentTimeMillis());
+        String folderName = TMP_PDF_DIR + "_" + String.valueOf(System.currentTimeMillis());
         createDirectory(folderName);
 
-        List<List<String>> qrCodeChunks = chunkList(generatedCodes, chunkSize);
+        List<List<String>> qrCodeChunks = chunkList(qrCodes, chunkSize);
         AtomicInteger index = new AtomicInteger(0);
 
         futures = qrCodeChunks
@@ -174,16 +110,7 @@ public class QRCodeService {
                     return CompletableFuture.runAsync(
                             () -> {
                                 try {
-                                    PDFGenService.generatePDF(
-                                            idx,
-                                            projectName,
-                                            PROJECT_ID,
-                                            qrCodeChunk,
-                                            logos,
-                                            size,
-                                            partner,
-                                            location,
-                                            folderName);
+                                    PDFGenService.generatePDF(idx, qrCodeChunk, folderName, args);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -204,6 +131,10 @@ public class QRCodeService {
         return chunks;
     }
 
+    /*
+     * Returns a chunk of the specified size from the list and removes it from the
+     * original list
+     */
     private List<String> trimList(List<String> generatedCodes, int count) {
         List<String> trimmedList = new ArrayList<>();
         for (int i = 0; i < count && !generatedCodes.isEmpty(); i++) {
@@ -212,7 +143,7 @@ public class QRCodeService {
         return trimmedList;
     }
 
-    public boolean validateQRCodes(List<String> qrCodes) {
+    private boolean validateQRCodes(List<String> qrCodes) {
         Set<String> codes = new HashSet<>();
         for (String qr : qrCodes) {
             if (!codes.add(qr)) {
@@ -223,18 +154,18 @@ public class QRCodeService {
         return true;
     }
 
-    public void showProgress(int current, int total) {
+    private void showProgress(int current, Long total) {
         float percentage = (float) (current * 100) / (float) total;
         String formatted = String.format("%.2f", percentage);
         System.out.print("\rProgress: " + formatted + "%");
         System.out.flush();
     }
 
-    private String zipPDFs(List<String> folderNames, String projectName) {
+    private String zipPDFs(List<String> folderNames) {
         // Create directory if not exists
         createDirectory(TMP_ZIP_DIR);
         String idx = String.valueOf(System.currentTimeMillis());
-        String zipFileName = "qr_codes_" + projectName + "_" + idx + ".zip";
+        String zipFileName = "qr_codes_" + "_" + idx + ".zip";
 
         try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(TMP_ZIP_DIR + zipFileName))) {
             for (String folderName : folderNames) {
@@ -282,18 +213,18 @@ public class QRCodeService {
             System.out.println("Directory created");
     }
 
-    private void cleanUp(List<String> logoPaths, String zipFileName, List<String> folderNames) {
+    private void cleanUp(String zipFileName, List<String> folderNames) {
         if (Context.DEBUG.greaterThanOrEqual(1)) {
             System.out.println("Starting cleanup...");
         }
 
         // Delete image files in the temp directory
         // for (String logoPath : logoPaths) {
-        //     try {
-        //         Files.deleteIfExists(Paths.get(logoPath));
-        //     } catch (IOException e) {
-        //         System.err.println("Error deleting logo file: " + e.getMessage());
-        //     }
+        // try {
+        // Files.deleteIfExists(Paths.get(logoPath));
+        // } catch (IOException e) {
+        // System.err.println("Error deleting logo file: " + e.getMessage());
+        // }
         // }
 
         // Delete zip file
@@ -307,21 +238,21 @@ public class QRCodeService {
 
         // Delete PDF files
         // if (Context.DEBUG.equalsValue(0)) {
-        //     for (String folderName : folderNames) {
-        //         try {
-        //             Files.walk(Paths.get(folderName))
-        //                     .sorted(Comparator.reverseOrder())
-        //                     .forEach(path -> {
-        //                         try {
-        //                             Files.delete(path);
-        //                         } catch (IOException e) {
-        //                             e.printStackTrace();
-        //                         }
-        //                     });
-        //         } catch (IOException e) {
-        //             System.err.println("Error deleting PDF file: " + e.getMessage());
-        //         }
-        //     }
+        // for (String folderName : folderNames) {
+        // try {
+        // Files.walk(Paths.get(folderName))
+        // .sorted(Comparator.reverseOrder())
+        // .forEach(path -> {
+        // try {
+        // Files.delete(path);
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // }
+        // });
+        // } catch (IOException e) {
+        // System.err.println("Error deleting PDF file: " + e.getMessage());
+        // }
+        // }
         // }
 
         if (Context.DEBUG.greaterThanOrEqual(1)) {
