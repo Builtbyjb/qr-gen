@@ -1,4 +1,4 @@
-package com.builtbyjb.qrgen.helpers;
+package com.builtbyjb.qrgen.helpers.types;
 
 public enum Storage {
     LOCAL,
