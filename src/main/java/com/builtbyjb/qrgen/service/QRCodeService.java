@@ -32,8 +32,9 @@ public class QRCodeService {
 
     private static final int CPU_CORES = Runtime.getRuntime().availableProcessors(); // Number of logical cpu cores
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Math.min(CPU_CORES, 4));
-    private static final UtilRepository dataStore = new UtilRepository();
-    private static final CloudStoreConfig cloudStoreConfig = new CloudStoreConfig();
+    // private static final UtilRepository dataStore = new UtilRepository();
+    // private static final CloudStoreConfig cloudStoreConfig = new
+    // CloudStoreConfig();
     private static final CodeGenService codeGenService = new CodeGenService();
     private static final String TMP_ZIP_DIR = "./tmp/zips/";
     private static final String TMP_PDF_DIR = "./tmp/pdfs/";
@@ -76,13 +77,16 @@ public class QRCodeService {
                 System.out.println("Generated zip file: " + zipFileName);
             }
 
+            // Create CSV file
+            generateCSV(qrCodes);
+
             // Upload to cloud storage
-            String fileLink;
-            if (Context.DEBUG.equalsValue(0)) {
-                fileLink = cloudStoreConfig.uploadFile(zipFileName, TMP_ZIP_DIR);
-            } else {
-                fileLink = "https://demo_file_link.zip";
-            }
+            // String fileLink;
+            // if (Context.DEBUG.equalsValue(0)) {
+            // fileLink = cloudStoreConfig.uploadFile(zipFileName, TMP_ZIP_DIR);
+            // } else {
+            // fileLink = "https://demo_file_link.zip";
+            // }
 
             // Clean up
             cleanUp(zipFileName, folderNames);
@@ -120,6 +124,16 @@ public class QRCodeService {
                 .toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    }
+
+    private void generateCSV(List<String> qrCodes) throws IOException {
+        String fileName = "qr_codes_" + "_" + System.currentTimeMillis() + ".csv";
+        Path csvPath = Paths.get(TMP_PDF_DIR, fileName);
+        try (FileOutputStream fos = new FileOutputStream(csvPath.toFile())) {
+            for (String qrCode : qrCodes) {
+                fos.write((qrCode + "\n").getBytes());
+            }
+        }
     }
 
     // Splits a large list into a list of smaller lists

@@ -4,7 +4,7 @@ root_dir = "."
 dev = [
     """
     DEBUG=1 TEST=0 \
-    ./mvnw clean package && \
+    ./mvnw clean package -q && \
     ./mvnw function:run \
     --quantity=1000 \
     --info="Additional information for QR code" \

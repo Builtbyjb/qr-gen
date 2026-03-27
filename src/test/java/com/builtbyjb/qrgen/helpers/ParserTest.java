@@ -1,5 +1,7 @@
 package com.builtbyjb.qrgen.helpers;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ public class ParserTest {
     @DisplayName("Test parse arguments")
     public void testParseArguments() {
         String[] args = { "--quantity=10", "--info=Test QR Code", "--size=500",
-                "--url=https://example.com", "--format=png", "--storage=local" };
+                "--url=https://example.com", "--format=pdf", "--storage=local" };
         Argument expected = Argument.builder()
                 .quantity(10)
                 .info("Test QR Code")
@@ -34,7 +36,11 @@ public class ParserTest {
                 .format(Format.PDF)
                 .storage(Storage.LOCAL)
                 .build();
-        Argument actual = Parser.parseArguments(args, "0.1.0").orElse(null);
-        Assertions.assertEquals(expected, actual);
+        Optional<Argument> actual = Parser.parseArguments(args, "0.1.0");
+        if (actual.isPresent()) {
+            Assertions.assertEquals(expected, actual.get());
+        } else {
+            Assertions.fail("Failed to parse arguments");
+        }
     }
 }

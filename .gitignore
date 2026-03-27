@@ -10,3 +10,4 @@ TODO.md
 .vscode
 .classpath
 .settings/
+.env

@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.builtbyjb.qrgen.helpers.types.Argument;
 import com.builtbyjb.qrgen.helpers.types.Storage;
+
+import jnr.x86asm.OP;
+
 import com.builtbyjb.qrgen.helpers.types.Format;
 
 public class Parser {
@@ -58,10 +61,10 @@ public class Parser {
             switch (str[0]) {
                 case "--version", "-v":
                     System.out.println("QR gen version " + version);
-                    return null;
+                    return Optional.empty();
                 case "--help", "-h":
                     System.out.println("Help/Usage");
-                    return null;
+                    return Optional.empty();
                 case "--quantity":
                     quantity = Integer.parseInt(str[1]);
                     break;
@@ -86,19 +89,19 @@ public class Parser {
         if (quantity < 1) {
             System.out.println("Error: Quantity must be greater than 0");
             // Print usage instructions
-            return null;
+            return Optional.empty();
         }
 
         if (url.isEmpty()) {
             System.out.println("Error: URL is required");
             // Print usage instructions
-            return null;
+            return Optional.empty();
         }
 
         if (format != Format.PDF) {
-            System.out.println("Error: Unsupported format");
+            System.out.println("Error: Unsupported format " + format);
             // Print usage instructions
-            return null;
+            return Optional.empty();
         }
 
         Argument argument = Argument.builder()
