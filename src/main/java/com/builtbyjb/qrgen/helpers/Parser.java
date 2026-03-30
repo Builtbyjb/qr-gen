@@ -4,9 +4,6 @@ import java.util.Optional;
 
 import com.builtbyjb.qrgen.helpers.types.Argument;
 import com.builtbyjb.qrgen.helpers.types.Storage;
-
-import jnr.x86asm.OP;
-
 import com.builtbyjb.qrgen.helpers.types.Format;
 
 public class Parser {

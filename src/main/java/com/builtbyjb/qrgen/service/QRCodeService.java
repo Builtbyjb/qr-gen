@@ -1,12 +1,8 @@
 package com.builtbyjb.qrgen.service;
 
-import com.builtbyjb.qrgen.config.CloudStoreConfig;
-import com.builtbyjb.qrgen.config.GmailConfig;
 import com.builtbyjb.qrgen.helpers.Context;
 import com.builtbyjb.qrgen.helpers.types.Argument;
 import com.builtbyjb.qrgen.helpers.types.Format;
-import com.builtbyjb.qrgen.model.PartnerModel;
-import com.builtbyjb.qrgen.repository.UtilRepository;
 import jakarta.mail.MessagingException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +59,7 @@ public class QRCodeService {
         }
 
         // Generate PDFs
-        int count = 0;
+        // int count = 0;
         int chunkSize = 500;
 
         if (args.getFormat() == Format.PDF) {

@@ -5,10 +5,10 @@ dev = [
     """
     DEBUG=1 TEST=0 \
     ./mvnw clean package -q && \
-    ./mvnw function:run \
+    java -jar target/qrgen-0.0.1-SNAPSHOT.jar \
     --quantity=1000 \
     --info="Additional information for QR code" \
-    --size=500x500 \
+    --size=500 \
     --url="https://example.com" \
     --format="pdf"
     """

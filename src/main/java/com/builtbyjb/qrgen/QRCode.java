@@ -33,7 +33,8 @@ public class QRCode {
                 return;
             }
         } catch (Exception e) {
-            System.out.println("Error generating QR codes: " + e.getMessage());
+            System.out.println("Error generating QR codes");
+            e.printStackTrace();
             return;
         }
 

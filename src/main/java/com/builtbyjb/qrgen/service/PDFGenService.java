@@ -18,21 +18,16 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.builtbyjb.qrgen.helpers.Context;
 import com.builtbyjb.qrgen.helpers.types.Argument;
-import com.builtbyjb.qrgen.model.QRCodeModel;
-import com.builtbyjb.qrgen.repository.QRCodeRepository;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +36,6 @@ import javax.imageio.ImageIO;
 class PDFGenService {
 
     private static final float DEFAULT_QRCODE_SIZE = 500; // 500px
-    private static final QRCodeRepository qrCodeRepository = new QRCodeRepository();
 
     public static void generatePDF(int idx, List<String> qrCodes, String folderName, Argument args)
             throws DocumentException, IOException, WriterException {
@@ -83,8 +77,6 @@ class PDFGenService {
             throws IOException, BadElementException, WriterException {
         Paragraph paragraph = new Paragraph();
 
-        List<QRCodeModel> qrCodeBatch = new ArrayList<>();
-
         for (String qrCode : qrCodes) {
             byte[] qrCodeImage = generateQRCodeImage(qrCode, args);
             com.itextpdf.text.Image qrImage = com.itextpdf.text.Image.getInstance(qrCodeImage);
@@ -105,11 +97,6 @@ class PDFGenService {
             // System.out.println(qr);
             // }
             // qrCodeBatch.add(qr);
-        }
-
-        // Add QR batch to the database
-        if (Context.DEBUG.equalsValue(0)) {
-            qrCodeRepository.batchInsert(qrCodeBatch);
         }
 
         return paragraph;
