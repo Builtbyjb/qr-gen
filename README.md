@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# QR Gen — Go Rewrite
+# QR Gen
 
 This directory contains a Go rewrite of the original QR code generator. The goal of this port is to provide a minimal, idiomatic Go implementation that reproduces the core CLI behavior from the original project: generate unique QR codes, write a CSV of generated codes, and produce simple artifacts under `tmp/` for downstream processing (PDF, ZIP, etc.).
 
@@ -115,6 +114,3 @@ The original project is MIT-licensed; check upstream for license details. This p
 ## Notes
 
 - This Go port was created to be a concise, testable foundation. It intentionally omits heavy external dependencies (image/PDF processing, cloud SDKs, database drivers) to keep the codebase small and easy to reason about. If you want full feature parity with the original Java implementation, I can add progressive pieces (PDF generation, zipping, cloud upload, DB integration) upon request.
-=======
-# QR Code Generator
->>>>>>> 1e0fcf3d177ba04f92dd5815fb1ae392b6d9f52e
